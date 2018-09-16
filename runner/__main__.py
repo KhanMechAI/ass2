@@ -132,14 +132,14 @@ def train():
     def getTrainBatch():
         labels = []
         arr = np.zeros([BATCH_SIZE, MAX_WORDS_IN_REVIEW, EMBEDDING_SIZE])
-        for i in range(BATCH_SIZE):
-            if (i % 2 == 0):
+        for k in range(BATCH_SIZE):
+            if (k % 2 == 0):
                 num = randint(0, 12499)
                 labels.append([1, 0])
             else:
                 num = randint(12500, 24999)
                 labels.append([0, 1])
-            arr[i] = training_data_embedded[num, :, :]
+            arr[k] = training_data_embedded[num, :, :]
         return arr, labels
 
     # Call implementation
