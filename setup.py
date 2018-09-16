@@ -2,14 +2,14 @@ from setuptools import setup
 
 setup(
     # Needed to silence warnings (and to be a worthwhile package)
-    name='Implementation',
+    name='implementation',
     url='https://github.com/KhanMechAI/ass2',
     author='Khan Schroder-Turner',
     author_email='khan.schroderturner@gmail.com',
     # Needed to actually package something
     packages=['implementation'],
     # Needed for dependencies
-    install_requires=['numpy', 'tensorflow', 'string'],
+    install_requires=['numpy', 'tensorflow', 'string', 'implementation'],
     # *strongly* suggested for sharing
     version='0.1',
     # The license can be anything you like
