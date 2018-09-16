@@ -7,7 +7,7 @@ setup(
     author='Khan Schroder-Turner',
     author_email='khan.schroderturner@gmail.com',
     # Needed to actually package something
-    packages=['implementation'],
+    packages=['implementation', 'runner'],
     # Needed for dependencies
     install_requires=[],
     # *strongly* suggested for sharing
