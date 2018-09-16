@@ -45,8 +45,8 @@ def preprocess(review):
             if word in stop_words:
                 next
             else:
-                processed_review.append(word)
-    return print(processed_review.lower())
+                processed_review.append(word.lower())
+    return print(processed_review)
     
 #Testing preprocess
 test_string1 = '...sdv.sdvj fv.advnaf  v  ...  favlkndfvav...v adfv ! ? ! $ sdfbvkjbnddfv '
