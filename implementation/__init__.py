@@ -36,7 +36,7 @@ def preprocess(review):
     RETURN: the preprocessed review in string form.
     """
     print('\n\n')
-    processed_review = ''
+    processed_review = []
     string_translator = str.maketrans('','', string.punctuation)
     review = review.translate(string_translator).split(' ')
 
@@ -45,10 +45,7 @@ def preprocess(review):
             if word in stop_words:
                 next
             else:
-                if processed_review:
-                    processed_review = processed_review + ' ' + word
-                else:
-                    processed_review = word
+                processed_review.append(word)
     return print(processed_review.lower())
     
 #Testing preprocess
