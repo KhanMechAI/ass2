@@ -46,13 +46,13 @@ def preprocess(review):
                 next
             else:
                 processed_review.append(word.lower())
-    return print(processed_review)
+    return processed_review
     
 #Testing preprocess
-test_string1 = '...sdv.sdvj fv.advnaf  v  ...  favlkndfvav...v adfv ! ? ! $ sdfbvkjbnddfv '
-test_string2 = 'the boy and the cat were alone in the woods having a blast of a time. Alas did a tree fall and crtush the poor ca=t, and the boy was enver the same again'
-preprocess(test_string1)
-preprocess(test_string2)
+# test_string1 = '...sdv.sdvj fv.advnaf  v  ...  favlkndfvav...v adfv ! ? ! $ sdfbvkjbnddfv '
+# test_string2 = 'the boy and the cat were alone in the woods having a blast of a time. Alas did a tree fall and crtush the poor ca=t, and the boy was enver the same again'
+# preprocess(test_string1)
+# preprocess(test_string2)
 
 def simple_sigmoid(bias, weights, inputs):
     term_1 = tf.matmul(weights[0], inputs[0])
