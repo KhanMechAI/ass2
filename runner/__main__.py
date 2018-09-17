@@ -51,7 +51,7 @@ def load_data(path='./data/train'):
     print("Loading IMDB Data...")
     data = []
 
-    dir = os.path.dirname(os.getcwd())
+    dir = os.getcwd()
     file_list = glob.glob(os.path.join(dir, path + '/pos/*'))
     file_list.extend(glob.glob(os.path.join(dir, path + '/neg/*')))
     print("Parsing %s files" % len(file_list))
