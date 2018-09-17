@@ -3,7 +3,7 @@ import string
 import numpy as np
 
 BATCH_SIZE = 128
-MAX_WORDS_IN_REVIEW = 100  # Maximum length of a review to consider
+MAX_WORDS_IN_REVIEW = 200  # Maximum length of a review to consider
 EMBEDDING_SIZE = 50  # Dimensions for each word vector
 INPUT_SIZE = [MAX_WORDS_IN_REVIEW, BATCH_SIZE, EMBEDDING_SIZE]
 
