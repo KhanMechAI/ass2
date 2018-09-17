@@ -35,8 +35,8 @@ def preprocess(review):
         - word find/replace
     RETURN: the preprocessed review in string form.
     """
-    print('\n\n')
-    processed_review = ''
+    
+    processed_review = []
     string_translator = str.maketrans('','', string.punctuation)
     review = review.translate(string_translator).split(' ')
 
@@ -45,17 +45,9 @@ def preprocess(review):
             if word in stop_words:
                 next
             else:
-                if processed_review:
-                    processed_review = processed_review + ' ' + word
-                else:
-                    processed_review = word
-    return print(processed_review.lower())
+                processed_review.append(word.lower())
+    return processed_review
     
-#Testing preprocess
-test_string1 = '...sdv.sdvj fv.advnaf  v  ...  favlkndfvav...v adfv ! ? ! $ sdfbvkjbnddfv '
-test_string2 = 'the boy and the cat were alone in the woods having a blast of a time. Alas did a tree fall and crtush the poor ca=t, and the boy was enver the same again'
-preprocess(test_string1)
-preprocess(test_string2)
 
 def simple_sigmoid(bias, weights, inputs):
     term_1 = tf.matmul(weights[0], inputs[0])
