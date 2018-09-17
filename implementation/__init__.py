@@ -3,9 +3,9 @@ import string
 import numpy as np
 
 BATCH_SIZE = 128
-MAX_WORDS_IN_REVIEW = 100  # Maximum length of a review to consider
+MAX_WORDS_IN_REVIEW = 200  # Maximum length of a review to consider
 EMBEDDING_SIZE = 50  # Dimensions for each word vector
-INPUT_SIZE = [MAX_WORDS_IN_REVIEW, BATCH_SIZE, EMBEDDING_SIZE]
+INPUT_SIZE = [BATCH_SIZE, MAX_WORDS_IN_REVIEW, EMBEDDING_SIZE]
 
 stop_words = set({'ourselves', 'hers', 'between', 'yourself', 'again',
                   'there', 'about', 'once', 'during', 'out', 'very', 'having',
@@ -106,7 +106,7 @@ def define_graph():
     num_classes, activation=None, 
     kernel_initializer=tf.orthogonal_initializer())
 
-    logits = dense_out(outputs[-1,:,:])
+    logits = dense_out(outputs[:-1,,:])
 
     # predits=tf.nn.softmax(logits)
 
