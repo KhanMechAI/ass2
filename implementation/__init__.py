@@ -93,7 +93,7 @@ def define_graph():
     num_units=num_units,
     input_mode='linear_input',
     direction='unidirectional',
-    dropout=dropout_keep_prob,
+    dropout=0.5,
     seed=np.random.randint(low=10000),
     dtype=tf.float32,
     kernel_initializer=None,
