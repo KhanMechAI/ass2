@@ -106,7 +106,7 @@ def define_graph():
     num_classes, activation=None, 
     kernel_initializer=tf.orthogonal_initializer())
 
-    logits = dense_out(outputs[:,-1,:])
+    logits = dense_out(outputs[-1,:,:])
 
     # predits=tf.nn.softmax(logits)
 
