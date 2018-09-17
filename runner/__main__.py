@@ -52,6 +52,7 @@ def load_data(path='./data/train'):
     data = []
 
     dir = os.path.dirname(os.getcwd())
+    print(dir)
     file_list = glob.glob(os.path.join(dir, path + '/pos/*'))
     file_list.extend(glob.glob(os.path.join(dir, path + '/neg/*')))
     print("Parsing %s files" % len(file_list))
