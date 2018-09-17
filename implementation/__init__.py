@@ -123,7 +123,7 @@ def define_graph():
             
     optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(loss)
 
-    temp = tf.equal(tf.argmax(predits, 1), tf.argmax(labels, 1))
+    temp = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
 
     Accuracy = tf.reduce_mean(tf.cast(temp, tf.float32))
 
