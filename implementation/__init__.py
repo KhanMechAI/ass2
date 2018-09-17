@@ -67,56 +67,6 @@ def simple_tanh(bias, weights, inputs):
     term_2 = tf.matmul(weights[1], inputs[1])
     return tf.tanh(tf.add(bias, term_1, term_2))
 
-# def lstm(x_t, h_t_1, c_t_1):
-#     #TODO: figure out input size variable
-#     #Forget gate
-#     Wf = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     Uf = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     bf = tf.Variable(tf.random_uniform(shape=[1, INPUT_SIZE], maxval=1, minval=0), validate_shape=False)
-
-#     f_t = simple_sigmoid(bf,[Wf, Uf], [x_t, h_t_1])
-
-#     #Remember gate
-#     Wi = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     Ui = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     bi = tf.Variable(tf.random_uniform(shape=[1, INPUT_SIZE], maxval=1, minval=0), validate_shape=False)
-
-#     i_t = simple_sigmoid(bi,[Wi, Ui], [x_t, h_t_1])
-
-#     Wg = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     Ug = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     bg = tf.Variable(tf.random_uniform(shape=[1, INPUT_SIZE], maxval=1, minval=0), validate_shape=False)
-
-#     g_t = simple_sigmoid(bg,[Wg, Ug], [x_t, h_t_1])
-
-#     #Selection
-#     Wo = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     Uo = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     bo = tf.Variable(tf.random_uniform(shape=[1, INPUT_SIZE], maxval=1, minval=0), validate_shape=False)
-
-#     o_t = simple_sigmoid(bo,[Wo, Uo], [x_t, h_t_1])
-#     #State
-
-#     c_t = tf.add(tf.tensordot(c_t_1, f_t), tf.tensordot(i_t, g_t))
-
-#     #Outputs
-#     h_t = tf.tensordot(tf.tanh(c_t), o_t)
-
-#     return c_t, h_t
-
-
-# def rnn_lstm(x, w, b):
-#     hidden_size_1 = 256
-#     hidden_size_2 = 256
-#     multi_rnn = rnn.MultiRNNCell([rnn.BasicLSTMCell(hidden_size_1),rnn.BasicLSTMCell(hidden_size_2)])
 
 def define_graph():
     """
@@ -136,14 +86,16 @@ def define_graph():
     num_classes = 2
     num_units = 320
     num_layers = 4
-    dropout_keep_prob = 0.5
+
+    dkp = tf.Variable(0.5)
+    dropout_keep_prob = tf.placeholder_with_default(dkp,shape=[],name="dropout_keep_prob")
     LEARNING_RATE = 0.001
 
-    input_data = tf.placeholder(tf.float32, shape=INPUT_SIZE, name="input_data")
+    input_data = tf.placeholder(dtype=tf.float32, shape=INPUT_SIZE, name="input_data")
 
-    labels = tf.placeholder(tf.float32, shape=[BATCH_SIZE, num_classes], name="labels")
+    labels = tf.placeholder(dtype=tf.float32, shape=[BATCH_SIZE, num_classes], name="labels")
 
-    print(input_data)
+    
     lstm_rnn = tf.contrib.cudnn_rnn.CudnnLSTM(
     num_layers=num_layers,
     num_units=num_units,
@@ -162,26 +114,17 @@ def define_graph():
     num_classes, activation=None, 
     kernel_initializer=tf.orthogonal_initializer())
 
-    logits = dense_out(outputs[-1,:,:])
+    logits = dense_out(outputs[:,-1,:])
 
-    predits=tf.nn.softmax(logits)
+    # predits=tf.nn.softmax(logits)
 
-    optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE)
-    
     loss=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(
-        logits=logits, labels=labels))
+            logits=logits, labels=labels))
+            
+    optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(loss)
 
-    print('\n\n')
-    print('\n\n')
-    print(outputs)
-    print('\n\n')
+    temp = tf.equal(tf.argmax(predits, 1), tf.argmax(labels, 1))
 
-    Accuracy = tf.metrics.accuracy(
-    labels,
-    predits,
-    weights=None,
-    metrics_collections=None,
-    updates_collections=None,
-    name=None)
+    Accuracy = tf.reduce_mean(tf.cast(temp, tf.float32))
 
     return input_data, labels, dropout_keep_prob, optimizer, Accuracy, loss
