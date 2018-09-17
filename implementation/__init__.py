@@ -5,7 +5,7 @@ import numpy as np
 BATCH_SIZE = 128
 MAX_WORDS_IN_REVIEW = 200  # Maximum length of a review to consider
 EMBEDDING_SIZE = 50  # Dimensions for each word vector
-INPUT_SIZE = [MAX_WORDS_IN_REVIEW, BATCH_SIZE, EMBEDDING_SIZE]
+INPUT_SIZE = [BATCH_SIZE, MAX_WORDS_IN_REVIEW, EMBEDDING_SIZE]
 
 stop_words = set({'ourselves', 'hers', 'between', 'yourself', 'again',
                   'there', 'about', 'once', 'during', 'out', 'very', 'having',
@@ -35,7 +35,7 @@ def preprocess(review):
         - word find/replace
     RETURN: the preprocessed review in string form.
     """
-    print('\n\n')
+    
     processed_review = []
     string_translator = str.maketrans('','', string.punctuation)
     review = review.translate(string_translator).split(' ')
@@ -133,52 +133,46 @@ def define_graph():
     num_classes = 2
     num_units = 320
     num_layers = 4
-    dropout_keep_prob = 0.5
+    dkp = tf.Variable(0.5)
+    dropout_keep_prob = tf.placeholder_with_default(dkp,shape=[],name="dropout_keep_prob")
     LEARNING_RATE = 0.001
 
-    input_data = tf.placeholder(tf.float32, shape=INPUT_SIZE, name="input_data")
+    input_data = tf.placeholder(dtype=tf.float32, shape=INPUT_SIZE, name="input_data")
 
-    labels = tf.placeholder(tf.float32, shape=[BATCH_SIZE, num_classes], name="labels")
+    labels = tf.placeholder(dtype=tf.float32, shape=[BATCH_SIZE, num_classes], name="labels")
 
-    print(input_data)
-    lstm_rnn = tf.contrib.cudnn_rnn.CudnnLSTM(
-    num_layers=num_layers,
-    num_units=num_units,
-    input_mode='linear_input',
-    direction='unidirectional',
-    dropout=dropout_keep_prob,
-    seed=np.random.randint(low=10000),
-    dtype=tf.float32,
-    kernel_initializer=None,
-    bias_initializer=None,
-    name=None)
 
-    outputs,_ = lstm_rnn(inputs=input_data, training=True)
+    lstm_rnn_cell = tf.contrib.cudnn_rnn.CudnnCompatibleLSTMCell(
+    num_units=num_units)
+
+
+    lstm_c_fw = [tf.contrib.rnn.DropoutWrapper(lstm_rnn_cell, output_keep_prob=dropout_keep_prob)]
+
+
+    lstm_c_bw = [tf.contrib.rnn.DropoutWrapper(lstm_rnn_cell, output_keep_prob=dropout_keep_prob)]
+
+
+    #tf.transpose(input_data, (1,0,2))
+    outputs, _, _ = tf.contrib.rnn.stack_bidirectional_dynamic_rnn(cells_fw=lstm_c_fw,cells_bw=lstm_c_bw,inputs=input_data,dtype=tf.float32, time_major=False)
+
 
     dense_out = tf.layers.Dense(
     num_classes, activation=None, 
     kernel_initializer=tf.orthogonal_initializer())
 
-    logits = dense_out(outputs[-1,:,:])
+    logits = dense_out(outputs[:,-1,:])
+
 
     predits=tf.nn.softmax(logits)
-
-    optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE)
     
-    loss=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(
-        logits=logits, labels=labels))
+    # loss=tf.nn.softmax_cross_entropy_with_logits_v2(
+        # logits=predits, labels=labels, name='loss',dim=0)
+    loss = tf.reduce_sum(-tf.reduce_sum(tf.multiply(labels ,tf.log(predits)),1, name="batch_Cross_Entropy"))
 
-    print('\n\n')
-    print('\n\n')
-    print(outputs)
-    print('\n\n')
+    optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE, name='optimizer').minimize(loss)
 
-    Accuracy = tf.metrics.accuracy(
-    labels,
-    predits,
-    weights=None,
-    metrics_collections=None,
-    updates_collections=None,
-    name=None)
+    temp = tf.equal(tf.argmax(predits, 1), tf.argmax(labels, 1))
+
+    Accuracy = tf.reduce_mean(tf.cast(temp, tf.float32))
 
     return input_data, labels, dropout_keep_prob, optimizer, Accuracy, loss
