@@ -111,12 +111,12 @@ def define_graph():
     # predits=tf.nn.softmax(logits)
 
     loss=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(
-            logits=logits, labels=labels))
+            logits=logits, labels=labels),name='loss')
             
-    optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE).minimize(loss)
+    optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE, name='optimiser').minimize(loss)
 
     temp = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
 
-    Accuracy = tf.reduce_mean(tf.cast(temp, tf.float32))
+    Accuracy = tf.reduce_mean(tf.cast(temp, tf.float32),name='accuracy')
 
     return input_data, labels, dropout_keep_prob, optimizer, Accuracy, loss
