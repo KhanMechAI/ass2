@@ -38,7 +38,7 @@ print(BATCH_SIZE)
 SAVE_FREQ = 100
 iterations = 100000
 
-checkpoints_dir = "./checkpoints"
+checkpoints_dir = "/content/drive/My\ Drive/Assignment2/checkpoints"
 
 
 
