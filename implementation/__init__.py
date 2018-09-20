@@ -83,7 +83,7 @@ def define_graph():
     """
     num_classes = 2
     num_units = 320
-    num_layers = 4
+    
     dkp = tf.Variable(0.5)
     dropout_keep_prob = tf.placeholder_with_default(dkp,shape=[],name="dropout_keep_prob")
     LEARNING_RATE = 0.001
@@ -103,7 +103,6 @@ def define_graph():
     lstm_c_bw = [tf.contrib.rnn.DropoutWrapper(lstm_rnn_cell, output_keep_prob=dropout_keep_prob)]
 
 
-    #tf.transpose(input_data, (1,0,2))
     outputs, _, _ = tf.contrib.rnn.stack_bidirectional_dynamic_rnn(cells_fw=lstm_c_fw,cells_bw=lstm_c_bw,inputs=input_data,dtype=tf.float32, time_major=False)
 
 
@@ -116,9 +115,7 @@ def define_graph():
 
     predits=tf.nn.softmax(logits)
     
-    # loss=tf.nn.softmax_cross_entropy_with_logits_v2(
-        # logits=predits, labels=labels, name='loss',dim=0)
-    loss = tf.reduce_sum(-tf.reduce_sum(tf.multiply(labels ,tf.log(predits)),1, name="loss"))
+    loss = tf.reduce_mean(-tf.reduce_sum(tf.multiply(labels ,tf.log(predits)),1, name="loss"))
 
     optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE, name='optimizer').minimize(loss)
 
