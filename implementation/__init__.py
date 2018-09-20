@@ -1,6 +1,7 @@
 import tensorflow as tf
 import string
 import numpy as np
+from tensorflow.contrib.seq2seq.python.ops import beam_search_ops
 
 BATCH_SIZE = 128
 MAX_WORDS_IN_REVIEW = 200  # Maximum length of a review to consider
@@ -64,56 +65,6 @@ def simple_tanh(bias, weights, inputs):
     term_2 = tf.matmul(weights[1], inputs[1])
     return tf.tanh(tf.add(bias, term_1, term_2))
 
-# def lstm(x_t, h_t_1, c_t_1):
-#     #TODO: figure out input size variable
-#     #Forget gate
-#     Wf = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     Uf = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     bf = tf.Variable(tf.random_uniform(shape=[1, INPUT_SIZE], maxval=1, minval=0), validate_shape=False)
-
-#     f_t = simple_sigmoid(bf,[Wf, Uf], [x_t, h_t_1])
-
-#     #Remember gate
-#     Wi = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     Ui = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     bi = tf.Variable(tf.random_uniform(shape=[1, INPUT_SIZE], maxval=1, minval=0), validate_shape=False)
-
-#     i_t = simple_sigmoid(bi,[Wi, Ui], [x_t, h_t_1])
-
-#     Wg = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     Ug = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     bg = tf.Variable(tf.random_uniform(shape=[1, INPUT_SIZE], maxval=1, minval=0), validate_shape=False)
-
-#     g_t = simple_sigmoid(bg,[Wg, Ug], [x_t, h_t_1])
-
-#     #Selection
-#     Wo = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     Uo = tf.Variable(tf.random_uniform(shape=[BATCH_SIZE, INPUT_SIZE], maxval=1), validate_shape=False)
-
-#     bo = tf.Variable(tf.random_uniform(shape=[1, INPUT_SIZE], maxval=1, minval=0), validate_shape=False)
-
-#     o_t = simple_sigmoid(bo,[Wo, Uo], [x_t, h_t_1])
-#     #State
-
-#     c_t = tf.add(tf.tensordot(c_t_1, f_t), tf.tensordot(i_t, g_t))
-
-#     #Outputs
-#     h_t = tf.tensordot(tf.tanh(c_t), o_t)
-
-#     return c_t, h_t
-
-
-# def rnn_lstm(x, w, b):
-#     hidden_size_1 = 256
-#     hidden_size_2 = 256
-#     multi_rnn = rnn.MultiRNNCell([rnn.BasicLSTMCell(hidden_size_1),rnn.BasicLSTMCell(hidden_size_2)])
 
 def define_graph():
     """

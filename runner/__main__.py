@@ -30,7 +30,7 @@ import pickle as pk
 import glob
 
 import implementation as imp
-from tensorflow.contrib.seq2seq.python.ops import beam_search_ops
+
 BATCH_SIZE = imp.BATCH_SIZE
 MAX_WORDS_IN_REVIEW = imp.MAX_WORDS_IN_REVIEW  # Maximum length of a review to consider
 EMBEDDING_SIZE = imp.EMBEDDING_SIZE  # Dimensions for each word vector
@@ -38,7 +38,8 @@ print(BATCH_SIZE)
 SAVE_FREQ = 100
 iterations = 100000
 
-checkpoints_dir = "./checkpoints"
+checkpoints_dir_gdrive = "/content/drive/My Drive/Assignment2/checkpoints"
+checkpoints_dir_local = "./checkpoints"
 
 
 
@@ -179,9 +180,15 @@ def train():
             print("loss", loss_value)
             print("acc", accuracy_value)
         if (i % SAVE_FREQ == 0 and i != 0):
-            if not os.path.exists(checkpoints_dir):
-                os.makedirs(checkpoints_dir)
-            save_path = all_saver.save(sess, checkpoints_dir +
+            if not os.path.exists(checkpoints_dir_gdrive):
+                os.makedirs(checkpoints_dir_gdrive)
+            save_path = all_saver.save(sess, checkpoints_dir_gdrive +
+                                       "/trained_model.ckpt",
+                                       global_step=i)
+            print("Saved model to %s" % save_path)
+            if not os.path.exists(checkpoints_dir_local):
+                os.makedirs(checkpoints_dir_local)
+            save_path = all_saver.save(sess, checkpoints_dir_local +
                                        "/trained_model.ckpt",
                                        global_step=i)
             print("Saved model to %s" % save_path)
