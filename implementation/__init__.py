@@ -167,12 +167,12 @@ def define_graph():
     
     # loss=tf.nn.softmax_cross_entropy_with_logits_v2(
         # logits=predits, labels=labels, name='loss',dim=0)
-    loss = tf.reduce_sum(-tf.reduce_sum(tf.multiply(labels ,tf.log(predits)),1, name="batch_Cross_Entropy"))
+    loss = tf.reduce_sum(-tf.reduce_sum(tf.multiply(labels ,tf.log(predits)),1, name="loss"))
 
     optimizer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE, name='optimizer').minimize(loss)
 
     temp = tf.equal(tf.argmax(predits, 1), tf.argmax(labels, 1))
 
-    Accuracy = tf.reduce_mean(tf.cast(temp, tf.float32))
+    Accuracy = tf.reduce_mean(tf.cast(temp, tf.float32), name='accuracy')
 
     return input_data, labels, dropout_keep_prob, optimizer, Accuracy, loss
