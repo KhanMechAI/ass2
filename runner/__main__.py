@@ -150,7 +150,14 @@ def train():
     training_data_embedded = embedd_data(training_data_text, glove_array, glove_dict)
     input_data, labels, dropout_keep_prob, optimizer, accuracy, loss = \
         imp.define_graph()
-
+    #Evaluation section
+    data_text = load_data("./data/validate")
+    test_data = embedd_data(data_text, glove_array, glove_dict)
+    num_samples = len(test_data)
+    num_batches_eval = num_samples // BATCH_SIZE
+    label_list_eval = [[1, 0]] * (num_samples // 2)
+    label_list_eval.extend([[0, 1]] * (num_samples // 2))
+    assert (len(label_list_eval) == num_samples)
     # tensorboard
     tf.summary.scalar("training_accuracy", accuracy)
     tf.summary.scalar("loss", loss)
@@ -192,6 +199,17 @@ def train():
                                        "/trained_model.ckpt",
                                        global_step=i)
             print("Saved model to %s" % save_path)
+            total_acc = 0
+            for i in range(num_batches_eval):
+                sample_index = i * BATCH_SIZE
+                batch = test_data[sample_index:sample_index + BATCH_SIZE]
+                batch_labels = label_list_eval[sample_index:sample_index + BATCH_SIZE]
+                lossV, accuracyV = sess.run([loss, accuracy], {input_data: batch,
+                                                            labels: batch_labels})
+                total_acc += accuracyV
+                print("Accuracy %s, Loss: %s" % (accuracyV, lossV))
+            print('-' * 40)
+            print("FINAL ACC:", total_acc / num_batches_eval)
     sess.close()
 
 

@@ -82,7 +82,7 @@ def define_graph():
     RETURNS: input, labels, optimizer, accuracy and loss
     """
     num_classes = 2
-    num_units = 350
+    num_units = 250
     
     dkp = tf.Variable(0.5)
     dropout_keep_prob = tf.placeholder_with_default(dkp,shape=[],name="dropout_keep_prob")
