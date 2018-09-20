@@ -30,6 +30,7 @@ import pickle as pk
 import glob
 
 import implementation as imp
+from tensorflow.contrib.seq2seq.python.ops import beam_search_ops
 
 BATCH_SIZE = imp.BATCH_SIZE
 MAX_WORDS_IN_REVIEW = imp.MAX_WORDS_IN_REVIEW  # Maximum length of a review to consider
